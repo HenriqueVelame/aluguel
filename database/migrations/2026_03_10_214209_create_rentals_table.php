@@ -11,7 +11,7 @@ return new class extends Migration
         Schema::create('rentals', function (Blueprint $table) {
         $table->id();
         $table->foreignId('user_id')->constrained();
-        $table->foreignId('clothing_id')->constrained('clothes');
+        $table->foreignId('item_cosplay_id')->constrained('item_cosplays');
         $table->date('data_retirada');
         $table->date('data_devolucao');
         $table->timestamps();
