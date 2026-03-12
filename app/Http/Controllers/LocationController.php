@@ -16,68 +16,59 @@ class LocationController extends Controller
     {
         // Carrega os relacionamentos para evitar o erro de 'property non-object' na view
         $locacoes = Location::with(['client', 'itemCosplay'])->get();
+     * Lista todas as locações com os dados dos clientes.
+     */
+    public function index() 
+    {
+        $locacoes = Location::with('cliente')->get();
         return view('locacoes.index', compact('locacoes'));
     }
 
     /**
-     * Exibe o formulário de criação (Necessário para carregar Clientes e Cosplays).
+     * Exibe o formulário de criação de locação.
      */
     public function create() 
     {
+        // Buscamos todos os clientes e apenas os itens que estão disponíveis
         $clientes = Client::all();
-        // Só mostra cosplays que estão 'disponivel'
-        $cosplays = ItemCosplay::where('status', 'disponivel')->get();
+        $itens = ItemCosplay::where('status', 'disponivel')->get();
         
-        return view('locacoes.create', compact('clientes', 'cosplays'));
+        return view('locacoes.create', compact('clientes', 'itens'));
     }
 
     /**
-     * Salva a nova locação no banco.
+     * Salva a locação e vincula o item na tabela pivô.
      */
     public function store(Request $request) 
     {
-        // 1. Validação robusta
-        $request->validate([
-            'client_id' => 'required|exists:clientes,id',
-            'item_cosplay_id' => 'required|exists:item_cosplays,id',
-            'data_locacao' => 'required|date',
-            'data_devolucao' => 'required|date|after_or_equal:data_locacao',
-            'valor_total' => 'required|numeric'
-        ]);
+        // 1. Criar o registro principal na tabela 'locacoes'
+        $locacao = Location::create($request->all());
 
-        // 2. Cria a locação
-        $locacao = Location::create([
-            'client_id' => $request->client_id,
-            'item_cosplay_id' => $request->item_cosplay_id,
-            'data_locacao' => $request->data_locacao,
-            'data_devolucao' => $request->data_devolucao,
-            'valor_total' => $request->valor_total,
-            'status' => 'Ativo',
-            'multa_atraso' => 0 // Inicia zerado
-        ]);
-
-        // 3. Atualiza o status do Cosplay para 'alugada'
-        $item = ItemCosplay::find($request->item_cosplay_id);
+        // 2. Buscar o item selecionado
+        $item = ItemCosplay::find($request->item_id);
+        
         if ($item) {
+            // 3. Atualizar o status do item para 'alugada'
             $item->update(['status' => 'alugada']);
+            
+            // 4. Vincular na tabela pivô 'itens_do_aluguel' com dados extras
+            $locacao->itens()->attach($item->id, [
+                'condicao_saida' => 'Ótimo estado',
+                'created_at' => now(),
+                'updated_at' => now()
+            ]);
         }
 
         return redirect()->route('locacoes.index')->with('success', 'Aluguel realizado com sucesso!');
     }
 
     /**
-     * Método para devolver o item e calcular a multa.
+     * Exibe os detalhes de uma locação específica.
      */
-    public function devolver($id) 
+    public function show($id)
     {
-        $locacao = Location::findOrFail($id);
-        
-        // Usa a função que criamos dentro do Model Location
-        $locacao->finalizarLocacao(now()->format('Y-m-d'));
-
-        // Libera o cosplay novamente
-        $locacao->itemCosplay->update(['status' => 'disponivel']);
-
-        return redirect()->back()->with('success', 'Item devolvido com sucesso!');
+        // Carrega a locação com o cliente e os itens vinculados
+        $locacao = Location::with(['cliente', 'itens'])->findOrFail($id);
+        return view('locacoes.show', compact('locacao'));
     }
 }
