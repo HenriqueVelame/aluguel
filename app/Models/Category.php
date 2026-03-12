@@ -7,9 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
+    // Adicione esta linha para corrigir o erro:
+    protected $table = 'categorias';
+
     protected $fillable = ['nome_categoria'];
-    
-    public function itens(): HasMany
+
+    public function itemCosplays()
     {
         return $this->hasMany(ItemCosplay::class, 'categoria_id');
     }

@@ -10,17 +10,39 @@
 
     <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
         <div class="container">
-            <a class="navbar-brand" href="#">🎭 Cosplay Rent</a>
+            <a class="navbar-brand" href="{{ url('/') }}">🎭 Cosplay Rent</a>
             <div class="navbar-nav">
-                <a class="nav-link" href="#">Catálogo</a>
-                <a class="nav-link" href="#">Meus Aluguéis</a>
-                <a class="nav-link text-danger" href="#">Sair</a>
+                @auth
+                    <a class="nav-link" href="{{ route('cosplays.index') }}">Catálogo</a>
+                    <a class="nav-link" href="{{ route('locacoes.index') }}">Meus Aluguéis</a>
+                    <a class="nav-link" href="{{ route('clientes.index') }}">Clientes</a>
+                    
+                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
+                        @csrf
+                        <button type="submit" class="nav-link btn btn-link text-danger" style="text-decoration: none;">Sair</button>
+                    </form>
+                @endauth
             </div>
         </div>
     </nav>
 
     <main class="container">
-        @yield('conteudo') </main>
+        @if(session('error'))
+            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
+                {{ session('error') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @if(session('success'))
+            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
+                {{ session('success') }}
+                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+            </div>
+        @endif
+
+        @yield('conteudo') 
+    </main>
 
     <footer class="text-center mt-5 py-3 border-top">
         <p>&copy; 2026 - Projeto de Aluguel de Cosplays</p>
