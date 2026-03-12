@@ -1,45 +1,43 @@
 @extends('layouts.app')
 
 @section('conteudo')
-<div class="d-flex justify-content-between align-items-center mb-3">
-    <h1>📦 Histórico de Locações</h1>
-    <a href="{{ route('locacoes.create') }}" class="btn btn-primary">Nova Locação</a>
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2>📦 Meus Aluguéis (Locações)</h2>
+    <a href="{{ route('locacoes.create') }}" class="btn btn-success">Nova Locação</a>
 </div>
 
 <div class="card shadow-sm">
-    <div class="card-body">
-        <table class="table table-hover">
-            <thead class="table-dark">
-                <tr>
-                    <th>ID</th>
-                    <th>Cliente</th>
-                    <th>Retirada</th>
-                    <th>Devolução Prevista</th>
-                    <th>Total</th>
-                    <th>Multa</th>
-                    <th>Ações</th>
-                </tr>
-            </thead>
-            <tbody>
-                @forelse($locacoes as $locacao)
-                <tr>
-                    <td>{{ $locacao->id }}</td>
-                    <td>{{ $locacao->cliente->nome }}</td>
-                    <td>{{ $locacao->data_retirada ? \Carbon\Carbon::parse($locacao->data_retirada)->format('d/m/Y') : 'Pendente' }}</td>
-                    <td>{{ \Carbon\Carbon::parse($locacao->data_devolucao_prevista)->format('d/m/Y') }}</td>
-                    <td>R$ {{ number_format($locacao->valor_total, 2, ',', '.') }}</td>
-                    <td class="text-danger">R$ {{ number_format($locacao->multa_atraso, 2, ',', '.') }}</td>
-                    <td>
-                        <a href="{{ route('locacoes.show', $locacao->id) }}" class="btn btn-sm btn-info text-white">Ver Itens</a>
-                    </td>
-                </tr>
-                @empty
-                <tr>
-                    <td colspan="7" class="text-center">Nenhuma locação encontrada.</td>
-                </tr>
-                @endforelse
-            </tbody>
-        </table>
+    <div class="card-body text-center">
+        @if($locacoes->isEmpty())
+            <p class="text-muted">Nenhum aluguel registrado no momento.</p>
+        @else
+            <table class="table table-striped">
+                <thead>
+                    <tr>
+                        <th>Cliente</th>
+                        <th>Cosplay</th>
+                        <th>Data Saída</th>
+                        <th>Devolução</th>
+                        <th>Status</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    @foreach($locacoes as $locacao)
+                    <tr>
+                        <td>{{ $locacao->client->nome }}</td>
+                        <td>{{ $locacao->itemCosplay->nome }}</td>
+                        <td>{{ $locacao->data_locacao }}</td>
+                        <td>{{ $locacao->data_devolucao }}</td>
+                        <td>
+                            <span class="badge bg-{{ $locacao->status == 'Ativo' ? 'success' : 'secondary' }}">
+                                {{ $locacao->status }}
+                            </span>
+                        </td>
+                    </tr>
+                    @endforeach
+                </tbody>
+            </table>
+        @endif
     </div>
 </div>
 @endsection

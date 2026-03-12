@@ -1,7 +1,6 @@
 <?php
 
 namespace App\Models;
-use App\Models\Locacao;
 
 use Illuminate\Database\Eloquent\Model;
 
@@ -9,10 +8,18 @@ class Client extends Model
 {
     protected $table = 'clientes';
 
-    protected $fillable = ['nome', 'cpf', 'email', 'telefone', 'endereco', 'medidas_corpo'];
+    protected $fillable = [
+        'nome', 
+        'cpf', 
+        'email', 
+        'telefone', 
+        'endereco', 
+        'medidas_corpo'
+    ];
 
     public function locacoes()
     {
-        return $this->hasMany(Locacao::class);
+        // Como o seu Model se chama Location, o relacionamento deve ser com Location::class
+        return $this->hasMany(Location::class, 'client_id');
     }
 }

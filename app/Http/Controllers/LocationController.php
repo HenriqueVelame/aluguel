@@ -10,6 +10,12 @@ use Illuminate\Http\Request;
 class LocationController extends Controller
 {
     /**
+     * Lista todas as locações.
+     */
+    public function index() 
+    {
+        // Carrega os relacionamentos para evitar o erro de 'property non-object' na view
+        $locacoes = Location::with(['client', 'itemCosplay'])->get();
      * Lista todas as locações com os dados dos clientes.
      */
     public function index() 

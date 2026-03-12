@@ -7,16 +7,12 @@ use Illuminate\Database\Eloquent\Relations\HasMany;
 
 class Category extends Model
 {
-    // Define o nome correto da tabela (evita que o Laravel procure 'categories')
+    // Adicione esta linha para corrigir o erro:
     protected $table = 'categorias';
 
-    // Permite o preenchimento em massa do campo nome_categoria
     protected $fillable = ['nome_categoria'];
-    
-    /**
-     * Relacionamento: Uma categoria possui muitos itens de cosplay
-     */
-    public function itens(): HasMany
+
+    public function itemCosplays()
     {
         return $this->hasMany(ItemCosplay::class, 'categoria_id');
     }

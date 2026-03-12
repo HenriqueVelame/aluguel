@@ -9,36 +9,28 @@ use Illuminate\Database\Eloquent\Relations\BelongsToMany;
 
 class Location extends Model
 {
-    // Define o nome da tabela no banco (evita o erro 'locations' not found)
     protected $table = 'locacoes';
 
     protected $fillable = [
-        'data_reserva', 
-        'data_retirada', 
-        'data_devolucao_prevista', 
-        'data_devolucao_real', 
+        'client_id', 
+        'item_cosplay_id', 
+        'data_locacao', 
+        'data_devolucao', 
         'valor_total', 
-        'multa_atraso', 
-        'cliente_id'
+        'status',
+        'multa_atraso',
+        'data_devolucao_real'
     ];
 
-    /**
-     * Relacionamento com o Cliente
-     */
-    public function cliente(): BelongsTo
-    {
-        return $this->belongsTo(Client::class, 'cliente_id');
+    public function client() 
+    { 
+        // Referenciando o Model Client
+        return $this->belongsTo(Client::class, 'client_id');
     }
 
-    /**
-     * Relacionamento muitos-para-muitos com Itens de Cosplay
-     * Note que usamos a tabela pivô 'itens_do_aluguel' conforme seu código
-     */
-    public function itens(): BelongsToMany
+    public function itemCosplay() 
     {
-        return $this->belongsToMany(ItemCosplay::class, 'itens_do_aluguel', 'locacao_id', 'item_id')
-                    ->withPivot('condicao_saida', 'condicao_retorno')
-                    ->withTimestamps();
+        return $this->belongsTo(ItemCosplay::class, 'item_cosplay_id');
     }
 
     /**
@@ -47,7 +39,8 @@ class Location extends Model
     public function finalizarLocacao($dataRetorno)
     {
         $this->data_devolucao_real = $dataRetorno;
-        $prevista = Carbon::parse($this->data_devolucao_prevista);
+        
+        $prevista = Carbon::parse($this->data_devolucao);
         $real = Carbon::parse($dataRetorno);
 
         if ($real->gt($prevista)) {
@@ -57,7 +50,8 @@ class Location extends Model
         } else {
             $this->multa_atraso = 0;
         }
-
+        
+        $this->status = 'Devolvido';
         $this->save();
     }
 }

@@ -3,31 +3,45 @@
 namespace App\Http\Controllers;
 
 use App\Models\ItemCosplay;
-use App\Models\Category;
+use App\Models\Category; // Certifique-se que o Model é Category ou Categoria
 use Illuminate\Http\Request;
 
 class ItemCosplayController extends Controller
 {
     public function index() {
-        $itens = ItemCosplay::with('categoria')->get();
-        return view('cosplays.index', compact('itens'));
+        // 1. Mudamos de $itens para $cosplays para bater com o seu @forelse($cosplays...)
+        $cosplays = ItemCosplay::with('categoria')->get();
+        return view('cosplays.index', compact('cosplays'));
     }
 
     public function create() {
-        $categorias = Categoria::all();
+        // 2. Corrigido: Se o Model importado lá em cima é Category, use Category. 
+        // Se no seu projeto for Categoria, mude o 'use' lá no topo.
+        $categorias = \App\Models\Category::all(); 
         return view('cosplays.create', compact('categorias'));
     }
 
     public function store(Request $request) {
-        $dados = $request->validate([
+        $request->validate([
             'nome_personagem' => 'required',
             'valor_aluguel' => 'required|numeric',
             'categoria_id' => 'required|exists:categorias,id',
             'tamanho' => 'required'
         ]);
 
-        ItemCosplay::create($request->all());
+        // 3. Adicionado o status padrão para garantir que ele apareça no catálogo
+        $dados = $request->all();
+        if (!isset($dados['status'])) {
+            $dados['status'] = 'disponivel';
+        }
+
+        ItemCosplay::create($dados);
         return redirect()->route('cosplays.index')->with('success', 'Cosplay cadastrado com sucesso!');
+    }
+
+    public function show($id) {
+        $cosplay = ItemCosplay::findOrFail($id);
+        return view('cosplays.show', compact('cosplay'));
     }
 
     public function destroy($id) {
