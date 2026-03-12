@@ -6,6 +6,8 @@ use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemCosplayController;
 use App\Http\Controllers\LocationController;
 
+
+Route::resource('locacoes', LocationController::class);
 Route::get('/', function () {
     return redirect()->route('cosplays.index');
 });
