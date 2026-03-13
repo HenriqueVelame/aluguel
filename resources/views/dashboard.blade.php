@@ -16,6 +16,9 @@
             <div class="col-md-4">
                 <a href="{{ route('locacoes.index') }}" class="btn btn-outline-dark btn-lg w-100 mb-2">Locações</a>
             </div>
+            <div class="col-md-4">
+                <a href="{{ route('categorias.index') }}" class="btn btn-outline-dark btn-lg w-100 mb-2">Categorias</a>
+            </div>
         </div>
     </div>
 </div>

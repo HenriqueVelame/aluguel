@@ -16,6 +16,7 @@
                     <a class="nav-link" href="{{ route('cosplays.index') }}">Catálogo</a>
                     <a class="nav-link" href="{{ route('locacoes.index') }}">Meus Aluguéis</a>
                     <a class="nav-link" href="{{ route('clientes.index') }}">Clientes</a>
+                    <a class="nav-link" href="{{ route('categorias.index') }}">Categorias</a>
                     
                     <form action="{{ route('logout') }}" method="POST" class="d-inline">
                         @csrf
