@@ -6,43 +6,49 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
-{
-    Schema::create('locacoes', function (Blueprint $table) {
-        $table->id();
-        $table->date('data_reserva')->nullable();
-        $table->date('data_retirada')->nullable();
-        $table->date('data_devolucao_prevista');
-        $table->date('data_devolucao_real')->nullable();
-        $table->decimal('valor_total', 10, 2)->default(0);
-        $table->decimal('multa_atraso', 10, 2)->default(0);
-        
-        // Chave estrangeira para clientes
-        $table->foreignId('cliente_id')->constrained('clientes')->onDelete('cascade');
-        
-        $table->timestamps();
-    });
+    {
+        Schema::create('locacoes', function (Blueprint $table) {
+            $table->id();
 
-    // Tabela Pivô (itens_do_aluguel) que você usa na Model
-    Schema::create('itens_do_aluguel', function (Blueprint $table) {
-        $table->id();
-        $table->foreignId('locacao_id')->constrained('locacoes')->onDelete('cascade');
-        $table->foreignId('item_id')->constrained('item_cosplays')->onDelete('cascade');
-        $table->string('condicao_saida')->nullable();
-        $table->string('condicao_retorno')->nullable();
-        $table->timestamps();
-    });
-}
+            $table->unsignedBigInteger('cliente_id');
 
-    /**
-     * Reverse the migrations.
-     */
+            $table->date('data_reserva');
+            $table->date('data_retirada');
+            $table->date('data_devolucao_prevista');
+            $table->date('data_devolucao_real')->nullable();
+
+            $table->decimal('valor_total', 10, 2)->default(0);
+            $table->decimal('multa', 10, 2)->default(0);
+
+            $table->timestamps();
+
+            $table->foreign('cliente_id')
+                ->references('id')
+                ->on('clientes')
+                ->onDelete('cascade');
+        });
+
+        Schema::create('itens_do_aluguel', function (Blueprint $table) {
+            $table->id();
+
+            $table->unsignedBigInteger('locacao_id');
+            $table->unsignedBigInteger('item_cosplay_id');
+
+            $table->timestamps();
+
+            $table->foreign('locacao_id')
+                ->references('id')
+                ->on('locacoes')
+                ->onDelete('cascade');
+
+            // SEM foreign key para clothes
+        });
+    }
+
     public function down(): void
     {
-        Schema::dropIfExists('itens_do_aluguel'); // Primeiro, dropa a tabela pivô
-        Schema::dropIfExists('locacoes'); // Depois, dropa a tabela principal
+        Schema::dropIfExists('itens_do_aluguel');
+        Schema::dropIfExists('locacoes');
     }
 };

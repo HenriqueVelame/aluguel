@@ -2,24 +2,20 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class Client extends Model
 {
+    use HasFactory;
+
     protected $table = 'clientes';
 
     protected $fillable = [
-        'nome', 
-        'cpf', 
-        'email', 
-        'telefone', 
-        'endereco', 
+        'nome',
+        'cpf',
+        'email',
+        'telefone',
         'medidas_corpo'
     ];
-
-    public function locacoes()
-    {
-        // Como o seu Model se chama Location, o relacionamento deve ser com Location::class
-        return $this->hasMany(Location::class, 'client_id');
-    }
 }

@@ -1,54 +1,128 @@
 <!DOCTYPE html>
 <html lang="pt-br">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Cosplay Rent - Sistema de Aluguel</title>
-    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+<meta charset="UTF-8">
+<title>Sistema de Aluguel</title>
+
+<style>
+
+body{
+    margin:0;
+    font-family: Arial, Helvetica, sans-serif;
+    background:#f4f6f9;
+}
+
+.sidebar{
+    width:220px;
+    height:100vh;
+    background:#2c3e50;
+    position:fixed;
+    left:0;
+    top:0;
+}
+
+.sidebar h2{
+    color:white;
+    text-align:center;
+    padding:20px;
+}
+
+.sidebar a{
+    display:block;
+    color:white;
+    padding:12px 20px;
+    text-decoration:none;
+}
+
+.sidebar a:hover{
+    background:#34495e;
+}
+
+.content{
+    margin-left:220px;
+    padding:20px;
+}
+
+.navbar{
+    background:white;
+    padding:15px;
+    border-bottom:1px solid #ddd;
+}
+
+.card{
+    background:white;
+    padding:20px;
+    border-radius:6px;
+    box-shadow:0px 0px 10px rgba(0,0,0,0.05);
+}
+
+.btn{
+    background:#3498db;
+    color:white;
+    padding:8px 14px;
+    border:none;
+    border-radius:4px;
+    text-decoration:none;
+}
+
+.btn:hover{
+    background:#2980b9;
+}
+
+</style>
+
 </head>
-<body class="bg-light">
 
-    <nav class="navbar navbar-expand-lg navbar-dark bg-dark mb-4">
-        <div class="container">
-            <a class="navbar-brand" href="{{ url('/') }}">🎭 Cosplay Rent</a>
-            <div class="navbar-nav">
-                @auth
-                    <a class="nav-link" href="{{ route('cosplays.index') }}">Catálogo</a>
-                    <a class="nav-link" href="{{ route('locacoes.index') }}">Meus Aluguéis</a>
-                    <a class="nav-link" href="{{ route('clientes.index') }}">Clientes</a>
-                    <a class="nav-link" href="{{ route('categorias.index') }}">Categorias</a>
-                    
-                    <form action="{{ route('logout') }}" method="POST" class="d-inline">
-                        @csrf
-                        <button type="submit" class="nav-link btn btn-link text-danger" style="text-decoration: none;">Sair</button>
-                    </form>
-                @endauth
-            </div>
-        </div>
-    </nav>
+<body>
 
-    <main class="container">
-        @if(session('error'))
-            <div class="alert alert-danger alert-dismissible fade show shadow-sm" role="alert">
-                {{ session('error') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+<div class="sidebar">
 
-        @if(session('success'))
-            <div class="alert alert-success alert-dismissible fade show shadow-sm" role="alert">
-                {{ session('success') }}
-                <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
-            </div>
-        @endif
+<h2>CosplaySys</h2>
 
-        @yield('conteudo') 
-    </main>
+<a href="/dashboard">Dashboard</a>
 
-    <footer class="text-center mt-5 py-3 border-top">
-        <p>&copy; 2026 - Projeto de Aluguel de Cosplays</p>
-    </footer>
+<a href="/clientes">Clientes</a>
 
-    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+<a href="/cosplays">Cosplays</a>
+
+<a href="/locacoes">Locações</a>
+
+<a href="/categorias">Categorias</a>
+
+<form method="POST" action="/logout">
+@csrf
+<button style="margin:20px;background:#e74c3c;color:white;border:none;padding:10px;width:80%;">
+Sair
+</button>
+</form>
+
+</div>
+
+<div class="content">
+
+<div class="navbar">
+<b>Sistema de Aluguel de Cosplays</b>
+</div>
+
+<br>
+
+@if(session('success'))
+<div style="background:#2ecc71;color:white;padding:10px;margin-bottom:10px;">
+{{ session('success') }}
+</div>
+@endif
+
+@if(session('error'))
+<div style="background:#e74c3c;color:white;padding:10px;margin-bottom:10px;">
+{{ session('error') }}
+</div>
+@endif
+
+<div class="card">
+@yield('content')
+</div>
+
+</div>
+
 </body>
 </html>
