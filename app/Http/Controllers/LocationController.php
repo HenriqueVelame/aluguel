@@ -14,13 +14,9 @@ class LocationController extends Controller
      */
     public function index() 
     {
-        // Carrega os relacionamentos para evitar o erro de 'property non-object' na view
+        // Carrega os relacionamentos definidos no Model Location
+        // Usamos 'client' e 'itemCosplay' (nomes dos métodos no seu Model)
         $locacoes = Location::with(['client', 'itemCosplay'])->get();
-     * Lista todas as locações com os dados dos clientes.
-     */
-    public function index() 
-    {
-        $locacoes = Location::with('cliente')->get();
         return view('locacoes.index', compact('locacoes'));
     }
 
@@ -37,26 +33,34 @@ class LocationController extends Controller
     }
 
     /**
-     * Salva a locação e vincula o item na tabela pivô.
+     * Salva a locação.
      */
     public function store(Request $request) 
     {
-        // 1. Criar o registro principal na tabela 'locacoes'
-        $locacao = Location::create($request->all());
+        // 1. Validação dos dados
+        $request->validate([
+            'client_id' => 'required|exists:clientes,id',
+            'item_cosplay_id' => 'required|exists:item_cosplays,id',
+            'data_locacao' => 'required|date',
+            'data_devolucao' => 'required|date|after_or_equal:data_locacao',
+            'valor_total' => 'required|numeric',
+        ]);
 
-        // 2. Buscar o item selecionado
-        $item = ItemCosplay::find($request->item_id);
-        
+        // 2. Criar o registro na tabela 'locacoes'
+        // Como sua migration já tem item_cosplay_id, não precisa de tabela pivô (attach)
+        $locacao = Location::create([
+            'client_id' => $request->client_id,
+            'item_cosplay_id' => $request->item_cosplay_id,
+            'data_locacao' => $request->data_locacao,
+            'data_devolucao' => $request->data_devolucao,
+            'valor_total' => $request->valor_total,
+            'status' => 'Ativo',
+        ]);
+
+        // 3. Atualizar o status do item para 'alugada'
+        $item = ItemCosplay::find($request->item_cosplay_id);
         if ($item) {
-            // 3. Atualizar o status do item para 'alugada'
             $item->update(['status' => 'alugada']);
-            
-            // 4. Vincular na tabela pivô 'itens_do_aluguel' com dados extras
-            $locacao->itens()->attach($item->id, [
-                'condicao_saida' => 'Ótimo estado',
-                'created_at' => now(),
-                'updated_at' => now()
-            ]);
         }
 
         return redirect()->route('locacoes.index')->with('success', 'Aluguel realizado com sucesso!');
@@ -67,8 +71,7 @@ class LocationController extends Controller
      */
     public function show($id)
     {
-        // Carrega a locação com o cliente e os itens vinculados
-        $locacao = Location::with(['cliente', 'itens'])->findOrFail($id);
+        $locacao = Location::with(['client', 'itemCosplay'])->findOrFail($id);
         return view('locacoes.show', compact('locacao'));
     }
 }

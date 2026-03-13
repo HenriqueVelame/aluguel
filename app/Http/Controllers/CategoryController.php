@@ -18,16 +18,10 @@ class CategoryController extends Controller
         return view('categorias.create');
     }
 
-    public function store(Request $request)
-    {
-        $request->validate([
-            'nome_categoria' => 'required|unique:categorias,nome_categoria|max:100'
-        ]);
-
+    public function store(Request $request) {
+        $request->validate(['nome_categoria' => 'required|unique:categorias']);
         Category::create($request->all());
-
-        return redirect()->route('categorias.index')
-                         ->with('success', 'Categoria criada com sucesso!');
+        return redirect()->back()->with('success', 'Categoria criada!');
     }
 
     public function edit(Category $categoria)
