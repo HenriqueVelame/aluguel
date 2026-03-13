@@ -2,83 +2,87 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\Client;
 use Illuminate\Http\Request;
+use App\Models\Client;
 use Illuminate\Support\Facades\Auth;
 
 class ClientController extends Controller
 {
-    // Lista todos os clientes (Ambos acessam)
-    public function index()
+
+    public function index(Request $request)
     {
-        $clientes = Client::all();
-        return view('clientes.index', compact('clientes'));
+        $busca = $request->input('busca');
+
+        $clientes = Client::where('nome','like',"%$busca%")
+            ->orWhere('cpf','like',"%$busca%")
+            ->paginate(10);
+
+        return view('clientes.index', compact('clientes','busca'));
     }
 
-    // Exibe o formulário de cadastro (Ambos acessam)
+
     public function create()
     {
         return view('clientes.create');
     }
 
-    // Salva o cliente no banco (Ambos acessam)
+
     public function store(Request $request)
     {
+
         $request->validate([
-            'nome' => 'required|string|max:255',
-            'cpf' => 'required|string|unique:clientes,cpf',
+            'nome' => 'required',
+            'cpf' => 'required|unique:clientes',
             'email' => 'required|email',
-            'telefone' => 'required',
-            'medidas_corpo' => 'nullable|string'
+            'telefone' => 'required'
         ]);
 
         Client::create($request->all());
 
         return redirect()->route('clientes.index')
-                         ->with('success', 'Cliente cadastrado com sucesso!');
+            ->with('success','Cliente cadastrado com sucesso!');
     }
 
-    // Exibe o formulário de edição (SÓ ADMIN)
-    public function edit(Client $cliente)
-    {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('clientes.index')
-                             ->with('error', 'Acesso negado! Apenas administradores podem editar clientes.');
-        }
 
+    public function edit($id)
+    {
+        $cliente = Client::findOrFail($id);
         return view('clientes.edit', compact('cliente'));
     }
 
-    // Atualiza os dados do cliente (SÓ ADMIN)
-    public function update(Request $request, Client $cliente)
+
+    public function update(Request $request, $id)
     {
-        if (Auth::user()->role !== 'admin') {
-            return redirect()->route('clientes.index')
-                             ->with('error', 'Ação não permitida.');
-        }
+
+        $cliente = Client::findOrFail($id);
 
         $request->validate([
             'nome' => 'required',
-            'cpf' => 'required|unique:clientes,cpf,' . $cliente->id,
+            'cpf' => 'required|unique:clientes,cpf,' . $id,
             'email' => 'required|email',
+            'telefone' => 'required'
         ]);
 
         $cliente->update($request->all());
 
         return redirect()->route('clientes.index')
-                         ->with('success', 'Dados do cliente atualizados!');
+            ->with('success','Cliente atualizado com sucesso!');
     }
 
-    // Remove o cliente (SÓ ADMIN)
-    public function destroy(Client $cliente)
+
+    public function destroy($id)
     {
-        if (Auth::user()->role !== 'admin') {
+
+        if(Auth::user()->role !== 'admin'){
             return redirect()->route('clientes.index')
-                             ->with('error', 'Acesso negado! Apenas administradores podem remover clientes.');
+            ->with('error','Apenas administradores podem excluir.');
         }
 
+        $cliente = Client::findOrFail($id);
         $cliente->delete();
+
         return redirect()->route('clientes.index')
-                         ->with('success', 'Cliente removido do sistema.');
+        ->with('success','Cliente removido com sucesso!');
     }
+
 }

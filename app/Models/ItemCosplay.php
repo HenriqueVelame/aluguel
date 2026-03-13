@@ -2,23 +2,24 @@
 
 namespace App\Models;
 
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
-use Illuminate\Database\Eloquent\Relations\BelongsTo;
 
 class ItemCosplay extends Model
 {
+    use HasFactory;
+
+    protected $table = 'clothes';
+
     protected $fillable = [
-        'nome_personagem',
-        'serie_origem',
+        'nome',
         'tamanho',
-        'descricao_pecas',
-        'valor_aluguel',
-        'valor_caucao',
-        'status',
-        'categoria_id'
+        'categoria_id',
+        'descricao',
+        'valor_locacao'
     ];
 
-    public function categoria(): BelongsTo
+    public function categoria()
     {
         return $this->belongsTo(Category::class, 'categoria_id');
     }
