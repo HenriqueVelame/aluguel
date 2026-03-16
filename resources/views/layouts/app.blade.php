@@ -20,7 +20,7 @@
 <body>
 
 <div class="sidebar d-flex flex-column p-3">
-    <h3 class="text-center mb-4 py-3 border-bottom">🎭 CosplaySys</h3>
+    <h3 class="text-center mb-4 py-3 border-bottom"> CosplaySys</h3>
     <ul class="nav nav-pills flex-column mb-auto">
         <li class="nav-item"><a href="/dashboard" class="nav-link"><i class="bi bi-speedometer2 me-2"></i> Dashboard</a></li>
         <li><a href="/clientes" class="nav-link"><i class="bi bi-people me-2"></i> Clientes</a></li>
