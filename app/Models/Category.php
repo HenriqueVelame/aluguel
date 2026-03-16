@@ -12,6 +12,11 @@ class Category extends Model
     protected $table = 'categorias';
 
     protected $fillable = [
-        'nome'
+        'nome_categoria' // Ajustado de 'nome' para 'nome_categoria'
     ];
+
+    public function itens()
+    {
+        return $this->hasMany(ItemCosplay::class, 'categoria_id');
+    }
 }

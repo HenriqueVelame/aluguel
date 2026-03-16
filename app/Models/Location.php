@@ -18,11 +18,19 @@ class Location extends Model
         'data_devolucao_prevista',
         'data_devolucao_real',
         'valor_total',
+        'status',
         'multa'
     ];
 
+    // Relacionamento com o Cliente
     public function cliente()
     {
         return $this->belongsTo(Client::class, 'cliente_id');
+    }
+
+    // Relacionamento com os Itens (Cosplays) via tabela pivô
+    public function itens()
+    {
+        return $this->belongsToMany(ItemCosplay::class, 'itens_do_aluguel', 'locacao_id', 'item_cosplay_id');
     }
 }
