@@ -1,56 +1,51 @@
-@extends('layouts.app') @section('conteudo')
-<div class="container mt-4">
-    <div class="card shadow">
-        <div class="card-header bg-warning text-dark d-flex justify-content-between align-items-center">
-            <h4 class="mb-0">✏️ Editar Cosplay: Homem-Aranha (Exemplo)</h4>
-            <a href="{{ route('cosplays.index') }}" class="btn btn-sm btn-outline-dark">Voltar</a>
-        </div>
-        <div class="card-body">
-            
-            <form action="#" method="POST">
-                @csrf
-                @method('PUT') 
+@extends('layouts.app')
 
-                <div class="row">
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Nome do Personagem</label>
-                        <input type="text" name="nome_personagem" class="form-control" value="Homem-Aranha" required>
-                    </div>
+@section('conteudo')
+<div class="d-flex justify-content-between align-items-center mb-4">
+    <h2 class="fw-bold"><i class="bi bi-pencil-square me-2"></i> Editar: {{ $cosplay->nome_personagem }}</h2>
+    <a href="{{ route('cosplays.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+</div>
 
-                    <div class="col-md-6 mb-3">
-                        <label class="form-label">Série/Origem</label>
-                        <input type="text" name="serie_origem" class="form-control" value="Marvel">
-                    </div>
+<div class="card shadow border-0">
+    <div class="card-body p-4">
+        <form action="{{ route('cosplays.update', $cosplay->id) }}" method="POST">
+            @csrf @method('PUT')
+            <div class="row mb-3">
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Personagem</label>
+                    <input type="text" name="nome_personagem" class="form-control" value="{{ $cosplay->nome_personagem }}" required>
                 </div>
-
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Tamanho</label>
-                        <input type="text" name="tamanho" class="form-control" value="M" required>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Valor do Aluguel (Diária)</label>
-                        <input type="number" step="0.01" name="valor_aluguel" class="form-control" value="120.00" required>
-                    </div>
-
-                    <div class="col-md-4 mb-3">
-                        <label class="form-label">Valor do Caução (Garantia)</label>
-                        <input type="number" step="0.01" name="valor_caucao" class="form-control" value="200.00" required>
-                    </div>
+                <div class="col-md-6">
+                    <label class="form-label fw-bold">Categoria</label>
+                    <select name="categoria_id" class="form-select" required>
+                        @foreach($categorias as $cat)
+                            <option value="{{ $cat->id }}" {{ $cosplay->categoria_id == $cat->id ? 'selected' : '' }}>
+                                {{ $cat->nome_categoria }}
+                            </option>
+                        @endforeach
+                    </select>
                 </div>
-
-                <div class="mb-3">
-                    <label class="form-label">Descrição das Peças</label>
-                    <textarea name="descricao_pecas" class="form-control" rows="3">Traje completo, máscara, lançadores de teia e botas.</textarea>
+            </div>
+            <div class="row mb-3">
+                <div class="col-md-4">
+                    <label class="form-label">Tamanho</label>
+                    <input type="text" name="tamanho" class="form-control" value="{{ $cosplay->tamanho }}" required>
                 </div>
-
-                <div class="mt-4 text-end">
-                    <button type="submit" class="btn btn-warning px-5">Atualizar Registro</button>
-                    <a href="{{ route('cosplays.index') }}" class="btn btn-outline-secondary">Cancelar</a>
+                <div class="col-md-4">
+                    <label class="form-label">Valor Diária</label>
+                    <input type="number" step="0.01" name="valor_aluguel" class="form-control" value="{{ $cosplay->valor_aluguel }}" required>
                 </div>
-            </form>
-        </div>
+                <div class="col-md-4">
+                    <label class="form-label">Status</label>
+                    <select name="status" class="form-select">
+                        <option value="disponivel" {{ $cosplay->status == 'disponivel' ? 'selected' : '' }}>Disponível</option>
+                        <option value="alugada" {{ $cosplay->status == 'alugada' ? 'selected' : '' }}>Alugada</option>
+                        <option value="manutencao" {{ $cosplay->status == 'manutencao' ? 'selected' : '' }}>Manutenção</option>
+                    </select>
+                </div>
+            </div>
+            <button type="submit" class="btn btn-primary btn-lg w-100">Atualizar Cosplay</button>
+        </form>
     </div>
 </div>
 @endsection
