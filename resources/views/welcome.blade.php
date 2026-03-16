@@ -3,7 +3,7 @@
 @section('conteudo')
 <div class="row justify-content-center align-items-center" style="min-height: 70vh;">
     <div class="col-md-8 text-center">
-        <h1 class="display-4 mb-4">Bem-vindo ao 🎭 Cosplay Rent</h1>
+        <h1 class="display-4 mb-4">Bem-vindo ao - Cosplay Rent</h1>
         <p class="lead mb-5">A maior plataforma de aluguel de cosplays e acessórios da região.</p>
         
         <div class="row g-4">
