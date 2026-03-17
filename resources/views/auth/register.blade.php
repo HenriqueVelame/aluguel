@@ -27,7 +27,12 @@
                             <input type="password" name="password_confirmation" class="form-control" required>
                         </div>
                     </div>
-                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold">Registrar Sistema</button>
+                    <button type="submit" class="btn btn-primary btn-lg w-100 fw-bold mb-3">Registrar Sistema</button>
+
+                    <div class="text-center">
+                        <span class="text-muted small">Já tem uma conta?</span> 
+                        <a href="{{ route('login') }}" class="text-primary small fw-bold text-decoration-none">Faça Login</a>
+                    </div>
                 </form>
             </div>
         </div>
