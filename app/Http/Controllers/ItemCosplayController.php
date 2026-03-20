@@ -18,25 +18,37 @@ class ItemCosplayController extends Controller
         return view('cosplays.create', compact('categorias'));
     }
 
-    public function store(Request $request) {
-        // 1. Validação (Se falhar aqui, ele volta para a tela anterior com os erros)
-        $validated = $request->validate([
-            'nome_personagem' => 'required',
-            'serie_origem'    => 'nullable',
-            'tamanho'         => 'required',
-            'categoria_id'    => 'required|exists:categorias,id',
-            'valor_aluguel'   => 'required|numeric',
-            'valor_caucao'    => 'required|numeric',
-            'descricao_pecas' => 'required',
-        ]);
+   public function store(Request $request) 
+{
+    // 1. Validação (Adicionamos 'foto' aqui para o Laravel não descartar o arquivo)
+    $validated = $request->validate([
+        'nome_personagem' => 'required',
+        'serie_origem'    => 'nullable',
+        'tamanho'         => 'required',
+        'categoria_id'    => 'required|exists:categorias,id',
+        'valor_aluguel'   => 'required|numeric',
+        'valor_caucao'    => 'required|numeric',
+        'descricao_pecas' => 'required',
+        'foto'            => 'nullable|image|mimes:jpeg,png,jpg,webp|max:2048', 
+    ]);
 
-        // 2. Criar com status padrão
-        $validated['status'] = 'disponivel';
-
-        ItemCosplay::create($validated);
-
-        return redirect()->route('cosplays.index')->with('success', 'Salvo com sucesso!');
+    // 2. Lógica da Foto (Onde o seu código antigo provavelmente falhava)
+    if ($request->hasFile('foto') && $request->file('foto')->isValid()) {
+        // Isso salva o arquivo físico em storage/app/public/cosplays
+        $path = $request->file('foto')->store('cosplays', 'public');
+        
+        // Isso insere o caminho no array que vai para o banco de dados
+        $validated['foto'] = $path;
     }
+
+    // 3. Status padrão
+    $validated['status'] = 'disponivel';
+
+    // 4. Salva no banco (Certifique-se que o Model é ItemCosplay)
+    ItemCosplay::create($validated);
+
+    return redirect()->route('cosplays.index')->with('success', 'Cosplay cadastrado com sucesso!');
+}
     
     
 

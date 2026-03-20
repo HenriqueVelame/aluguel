@@ -6,8 +6,10 @@
         <h4 class="mb-0">Cadastrar Novo Cosplay</h4>
     </div>
     <div class="card-body">
-        <form action="{{ route('cosplays.store') }}" method="POST">
+        {{-- 1. ADICIONADO: enctype="multipart/form-data" para permitir o envio de arquivos --}}
+        <form action="{{ route('cosplays.store') }}" method="POST" enctype="multipart/form-data">
             @csrf 
+            
             <div class="row">
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Nome do Personagem</label>
@@ -16,7 +18,7 @@
 
                 <div class="col-md-6 mb-3">
                     <label class="form-label">Categoria</label>
-                    <select name="categoria_id" class="form-select" required>
+                    <select name="categoria_id" class="form-select">
                         <option value="">Selecione...</option>
                         @foreach($categorias as $categoria)
                             <option value="{{ $categoria->id }}">{{ $categoria->nome_categoria }}</option>
@@ -52,7 +54,16 @@
                 <textarea name="descricao_pecas" class="form-control" rows="3" required></textarea>
             </div>
 
-            <button type="submit" class="btn btn-success">Salvar Registro</button>
+            {{-- 2. ADICIONADO: Campo de Upload de Foto --}}
+            <div class="mb-4">
+                <label class="form-label fw-bold">Foto do Cosplay</label>
+                <input type="file" name="foto" class="form-control" accept="image/*">
+                <div class="form-text">Formatos aceitos: JPG, PNG ou WEBP.</div>
+            </div>
+
+            <div class="d-grid">
+                <button type="submit" class="btn btn-success btn-lg">Salvar Registro</button>
+            </div>
         </form>
     </div>
 </div>
