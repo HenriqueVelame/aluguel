@@ -13,6 +13,7 @@ return new class extends Migration
     {
         Schema::table('cosplays', function (Blueprint $table) {
             //
+            $table->string ('foto')->nullable();
         });
     }
 
@@ -23,6 +24,7 @@ return new class extends Migration
     {
         Schema::table('cosplays', function (Blueprint $table) {
             //
+              dropIfExists('cosplay') ; 
         });
     }
 };

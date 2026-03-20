@@ -19,7 +19,8 @@ class ItemCosplay extends Model
         'valor_aluguel',
         'valor_caucao',
         'status',
-        'categoria_id'
+        'categoria_id',
+        'foto'
     ];
 
     public function categoria() {
