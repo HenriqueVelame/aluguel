@@ -20,28 +20,28 @@ class ItemCosplayController extends Controller
         return view('cosplays.create', compact('categorias'));
     }
 
-    public function store(Request $request)
-    {
+    public function store(Request $request) {
         // 1. Validação (Se falhar aqui, ele volta para a tela anterior com os erros)
         $validated = $request->validate([
             'nome_personagem' => 'required',
-            'serie_origem' => 'nullable',
-            'tamanho' => 'required',
-            'categoria_id' => 'required|exists:categorias,id',
-            'valor_aluguel' => 'required|numeric',
-            'valor_caucao' => 'required|numeric',
+            'serie_origem'    => 'nullable',
+            'tamanho'         => 'required',
+            'categoria_id'    => 'required|exists:categorias,id',
+            'valor_aluguel'   => 'required|numeric',
+            'valor_caucao'    => 'required|numeric',
             'descricao_pecas' => 'required',
         ]);
 
         // 2. Criar com status padrão
         $validated['status'] = 'disponivel';
 
-        ItemCosplay::create($validated);
+    // 4. Salva no banco (Certifique-se que o Model é ItemCosplay)
+    ItemCosplay::create($validated);
 
         return redirect()->route('cosplays.index')->with('success', 'Salvo com sucesso!');
     }
-
-
+    
+    
 
     public function show(string $id)
     {

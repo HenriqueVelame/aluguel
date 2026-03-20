@@ -9,11 +9,29 @@
 <div class="card shadow border-0">
     <div class="card-body p-0">
         <div class="row g-0">
-            <div class="col-md-4 bg-dark text-white p-5 text-center d-flex flex-column justify-content-center border-radius-left">
-                <i class="bi bi-person-arms-up display-1 mb-3"></i>
-                <h3 class="fw-bold">{{ $cosplay->nome_personagem }}</h3>
-                <span class="badge bg-primary px-3 py-2">{{ $cosplay->categoria->nome_categoria ?? 'Geral' }}</span>
+            {{-- SEÇÃO DA FOTO --}}
+            <div class="col-md-4 bg-dark text-white p-0 text-center d-flex flex-column justify-content-center border-radius-left" style="overflow: hidden; min-height: 400px;">
+                
+                @if($cosplay->foto)
+                    {{-- Exibe a foto se ela existir no banco --}}
+                    <img src="{{ asset('storage/' . $cosplay->foto) }}" 
+                         alt="Foto de {{ $cosplay->nome_personagem }}" 
+                         style="width: 100%; height: 100%; object-fit: cover;">
+                @else
+                    {{-- Caso não tenha foto, mantém o ícone padrão --}}
+                    <div class="p-5">
+                        <i class="bi bi-person-arms-up display-1 mb-3"></i>
+                        <p class="text-muted">Sem foto disponível</p>
+                    </div>
+                @endif
+
+                {{-- Nome e Categoria sobrepostos ou logo abaixo da imagem --}}
+                <div class="p-3 bg-dark bg-opacity-75">
+                    <h3 class="fw-bold mb-1">{{ $cosplay->nome_personagem }}</h3>
+                    <span class="badge bg-primary px-3 py-2">{{ $cosplay->categoria->nome_categoria ?? 'Geral' }}</span>
+                </div>
             </div>
+
             <div class="col-md-8 p-5">
                 <div class="row mb-4">
                     <div class="col-6">
