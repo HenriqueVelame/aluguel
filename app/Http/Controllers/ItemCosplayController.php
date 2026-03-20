@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\ItemCosplay;
 use App\Models\Category;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Storage;
 
 class ItemCosplayController extends Controller
 {
@@ -21,27 +22,28 @@ class ItemCosplayController extends Controller
     }
 
     public function store(Request $request) {
-        // 1. Validação (Se falhar aqui, ele volta para a tela anterior com os erros)
         $validated = $request->validate([
             'nome_personagem' => 'required',
             'serie_origem'    => 'nullable',
-            'tamanho'         => 'required',
+            'tamanho'         => 'required|max:10', 
             'categoria_id'    => 'required|exists:categorias,id',
             'valor_aluguel'   => 'required|numeric',
             'valor_caucao'    => 'required|numeric',
             'descricao_pecas' => 'required',
+            'foto'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
         ]);
 
-        // 2. Criar com status padrão
         $validated['status'] = 'disponivel';
 
-    // 4. Salva no banco (Certifique-se que o Model é ItemCosplay)
-    ItemCosplay::create($validated);
+        if ($request->hasFile('foto')) {
+            $path = $request->file('foto')->store('cosplays', 'public');
+            $validated['foto'] = $path;
+        }
+
+        ItemCosplay::create($validated);
 
         return redirect()->route('cosplays.index')->with('success', 'Salvo com sucesso!');
     }
-    
-    
 
     public function show(string $id)
     {
@@ -49,7 +51,6 @@ class ItemCosplayController extends Controller
         return view('cosplays.show', compact('cosplay'));
     }
 
-    // ✅ exibe o formulário de edição
     public function edit(string $id)
     {
         $cosplay = ItemCosplay::findOrFail($id);
@@ -57,32 +58,43 @@ class ItemCosplayController extends Controller
         return view('cosplays.edit', compact('cosplay', 'categorias'));
     }
 
-    // ✅ salva as alterações
-public function update(Request $request, string $id) 
-{
-    $cosplay = ItemCosplay::findOrFail($id);
+    public function update(Request $request, string $id) 
+    {
+        $cosplay = ItemCosplay::findOrFail($id);
 
-    $validated = $request->validate([
-        'nome_personagem' => 'required|string|max:255',
-        'tamanho'         => 'required',
-        'categoria_id'    => 'required',
-        'valor_aluguel'   => 'required|numeric',
-        'status'          => 'required',
-        'serie_origem'    => 'nullable',
-    ]);
+        $validated = $request->validate([
+            'nome_personagem' => 'required|string|max:255',
+            'tamanho'         => 'required|max:10',
+            'categoria_id'    => 'required',
+            'valor_aluguel'   => 'required|numeric',
+            'status'          => 'required',
+            'serie_origem'    => 'nullable',
+            'foto'            => 'nullable|image|mimes:jpeg,png,jpg,gif|max:2048',
+        ]);
 
-    $cosplay->update($validated);
+        if ($request->hasFile('foto')) {
+            if ($cosplay->foto) {
+                Storage::disk('public')->delete($cosplay->foto);
+            }
+            $path = $request->file('foto')->store('cosplays', 'public');
+            $validated['foto'] = $path;
+        }
 
-    return redirect()->route('cosplays.index')->with('success', 'Atualizado!');
-}
+        $cosplay->update($validated);
 
-    // ✅ deleta o item 
+        return redirect()->route('cosplays.index')->with('success', 'Atualizado!');
+    }
+
     public function destroy(string $id)
     {
         $cosplay = ItemCosplay::findOrFail($id);
+        
+        if ($cosplay->foto) {
+            Storage::disk('public')->delete($cosplay->foto);
+        }
+        
         $cosplay->delete();
 
         return redirect()->route('cosplays.index')->with('success', 'Item excluído com sucesso!');
     }
-
 }

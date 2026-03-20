@@ -8,8 +8,10 @@
 
 <div class="card shadow border-0">
     <div class="card-body p-4">
-        <form action="{{ route('cosplays.update', $cosplay->id) }}" method="POST">
-            @csrf @method('PUT')
+        <form action="{{ route('cosplays.update', $cosplay->id) }}" method="POST" enctype="multipart/form-data">
+            @csrf 
+            @method('PUT')
+            
             <div class="row mb-3">
                 <div class="col-md-6">
                     <label class="form-label fw-bold">Personagem</label>
@@ -26,6 +28,7 @@
                     </select>
                 </div>
             </div>
+
             <div class="row mb-3">
                 <div class="col-md-4">
                     <label class="form-label">Tamanho</label>
@@ -44,6 +47,26 @@
                     </select>
                 </div>
             </div>
+
+            <div class="row mb-4">
+                <div class="col-md-12">
+                    <label class="form-label fw-bold">Foto do Cosplay</label>
+                    
+                    @if($cosplay->foto)
+                        <div class="mb-2">
+                            <small class="text-muted d-block mb-1">Foto atual:</small>
+                            <img src="{{ asset('storage/' . $cosplay->foto) }}" alt="Preview" class="img-thumbnail" style="height: 150px;">
+                        </div>
+                    @endif
+                    
+                    <input type="file" name="foto" class="form-control @error('foto') is-invalid @enderror">
+                    @error('foto')
+                        <div class="invalid-feedback">{{ $message }}</div>
+                    @enderror
+                    <small class="text-muted">Deixe em branco para manter a foto atual.</small>
+                </div>
+            </div>
+
             <button type="submit" class="btn btn-primary btn-lg w-100">Atualizar Cosplay</button>
         </form>
     </div>

@@ -6,25 +6,17 @@ use Illuminate\Support\Facades\Schema;
 
 return new class extends Migration
 {
-    /**
-     * Run the migrations.
-     */
     public function up(): void
     {
-        Schema::table('cosplays', function (Blueprint $table) {
-            //
-            $table->string ('foto')->nullable();
+        Schema::table('item_cosplays', function (Blueprint $table) {
+            $table->string('foto')->nullable();
         });
     }
 
-    /**
-     * Reverse the migrations.
-     */
     public function down(): void
     {
-        Schema::table('cosplays', function (Blueprint $table) {
-            //
-              dropIfExists('cosplay') ; 
+        Schema::table('item_cosplays', function (Blueprint $table) {
+            $table->dropColumn('foto');
         });
     }
 };

@@ -12,7 +12,7 @@ return new class extends Migration
             $table->id();
 
             $table->unsignedBigInteger('cliente_id');
-
+            $table->string('status')->default('Ativo');
             $table->date('data_reserva');
             $table->date('data_retirada');
             $table->date('data_devolucao_prevista');
