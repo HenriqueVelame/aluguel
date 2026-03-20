@@ -8,25 +8,28 @@ use Illuminate\Http\Request;
 
 class ItemCosplayController extends Controller
 {
-    public function index() {
+    public function index()
+    {
         $cosplays = ItemCosplay::with('categoria')->get();
         return view('cosplays.index', compact('cosplays'));
     }
 
-    public function create() {
-        $categorias = Category::all(); 
+    public function create()
+    {
+        $categorias = Category::all();
         return view('cosplays.create', compact('categorias'));
     }
 
-    public function store(Request $request) {
+    public function store(Request $request)
+    {
         // 1. Validação (Se falhar aqui, ele volta para a tela anterior com os erros)
         $validated = $request->validate([
             'nome_personagem' => 'required',
-            'serie_origem'    => 'nullable',
-            'tamanho'         => 'required',
-            'categoria_id'    => 'required|exists:categorias,id',
-            'valor_aluguel'   => 'required|numeric',
-            'valor_caucao'    => 'required|numeric',
+            'serie_origem' => 'nullable',
+            'tamanho' => 'required',
+            'categoria_id' => 'required|exists:categorias,id',
+            'valor_aluguel' => 'required|numeric',
+            'valor_caucao' => 'required|numeric',
             'descricao_pecas' => 'required',
         ]);
 
@@ -37,43 +40,45 @@ class ItemCosplayController extends Controller
 
         return redirect()->route('cosplays.index')->with('success', 'Salvo com sucesso!');
     }
-    
-    
 
-    public function show(string $id) {
+
+
+    public function show(string $id)
+    {
         $cosplay = ItemCosplay::with('categoria')->findOrFail($id);
         return view('cosplays.show', compact('cosplay'));
     }
 
     // ✅ exibe o formulário de edição
-    public function edit(string $id) {
-        $cosplay    = ItemCosplay::findOrFail($id);
+    public function edit(string $id)
+    {
+        $cosplay = ItemCosplay::findOrFail($id);
         $categorias = Category::all();
         return view('cosplays.edit', compact('cosplay', 'categorias'));
     }
 
     // ✅ salva as alterações
-    public function update(Request $request, string $id) {
-        $cosplay = ItemCosplay::findOrFail($id);
+public function update(Request $request, string $id) 
+{
+    $cosplay = ItemCosplay::findOrFail($id);
 
-        $validated = $request->validate([
-            'nome_personagem' => 'required',
-            'serie_origem'    => 'nullable',
-            'tamanho'         => 'required',
-            'categoria_id'    => 'required|exists:categorias,id',
-            'valor_aluguel'   => 'required|numeric',
-            'valor_caucao'    => 'required|numeric',
-            'descricao_pecas' => 'required',
-            'status'          => 'required|in:disponivel,alugado,manutencao',
-        ]);
+    $validated = $request->validate([
+        'nome_personagem' => 'required|string|max:255',
+        'tamanho'         => 'required',
+        'categoria_id'    => 'required',
+        'valor_aluguel'   => 'required|numeric',
+        'status'          => 'required',
+        'serie_origem'    => 'nullable',
+    ]);
 
-        $cosplay->update($validated);
+    $cosplay->update($validated);
 
-        return redirect()->route('cosplays.index')->with('success', 'Atualizado com sucesso!');
-    }
+    return redirect()->route('cosplays.index')->with('success', 'Atualizado!');
+}
 
-    // ✅ deleta o item
-    public function destroy(string $id) {
+    // ✅ deleta o item 
+    public function destroy(string $id)
+    {
         $cosplay = ItemCosplay::findOrFail($id);
         $cosplay->delete();
 
