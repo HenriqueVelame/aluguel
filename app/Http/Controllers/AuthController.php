@@ -44,17 +44,26 @@ class AuthController extends Controller
     }
 
     public function register(Request $request) {
+        // Validação com mensagens em Português
         $request->validate([
-            'name' => 'required|string|max:255',
-            'email' => 'required|string|email|max:255|unique:users',
-            'password' => 'required|string|min:6|confirmed', 
+            'name'     => 'required|string|max:255',
+            'email'    => 'required|string|email|max:255|unique:users',
+            'password' => 'required|string|min:8|confirmed', 
+        ], [
+            'name.required'      => 'O campo nome é obrigatório.',
+            'email.required'     => 'O e-mail é obrigatório.',
+            'email.unique'       => 'Este e-mail já está cadastrado no sistema.',
+            'password.required'  => 'A senha é obrigatória.',
+            'password.min'       => 'A senha deve ter pelo menos 8 caracteres.',
+            'password.confirmed' => 'As senhas digitadas não são iguais.',
         ]);
 
+        // Criação do usuário após a validação passar
         User::create([
-            'name' => $request->name,
-            'email' => $request->email,
+            'name'     => $request->name,
+            'email'    => $request->email,
             'password' => Hash::make($request->password),
-            'role' => 'operador', 
+            'role'     => 'operador', 
         ]);
 
         return redirect()->route('login')->with('success', 'Conta criada! Agora você pode logar.');

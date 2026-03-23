@@ -11,7 +11,7 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::table('cosplays', function (Blueprint $table) {
+        Schema::table('item_cosplays', function (Blueprint $table) {
             //
             $table->string ('foto')->nullable();
         });
