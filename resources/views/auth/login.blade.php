@@ -34,6 +34,8 @@
                     <div class="text-center">
                         <span class="text-muted small">Não tem conta?</span> 
                         <a href="{{ route('register') }}" class="text-primary small fw-bold text-decoration-none">Criar agora</a>
+                        <br>
+                        <a href="{{ route('password.request') }}" class="text-primary small fw-bold text-decoration-none">Esqueci minha senha</a>
                     </div>
                 </form>
             </div>

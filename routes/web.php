@@ -6,6 +6,7 @@ use App\Http\Controllers\ClientController;
 use App\Http\Controllers\CategoryController;
 use App\Http\Controllers\ItemCosplayController;
 use App\Http\Controllers\LocationController;
+use App\Http\Controllers\ForgotPasswordController;
 
 /*
 |--------------------------------------------------------------------------
@@ -25,6 +26,13 @@ Route::post('/login', [AuthController::class, 'login'])->name('login.post');
 Route::get('/register', [AuthController::class, 'showRegister'])->name('register');
 Route::post('/register', [AuthController::class, 'register'])->name('register.post');
 
+
+// Esqueci minha senha
+Route::get('/recovery', [ForgotPasswordController::class, 'showLinkRequestForm'])->name('password.request');
+Route::post('/recovery', [ForgotPasswordController::class, 'sendResetCode'])->name('password.email');
+
+Route::get('/recovery/reset/{email}', [ForgotPasswordController::class, 'showResetForm'])->name('password.reset');
+Route::post('/recovery/reset', [ForgotPasswordController::class, 'reset'])->name('password.update');
 
 /*
 |--------------------------------------------------------------------------
