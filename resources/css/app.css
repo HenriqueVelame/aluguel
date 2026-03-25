@@ -6,14 +6,29 @@
 @source '../**/*.js';
 
 
-:root {
-  --bg: #ffffff;
-  --text: #111111;
-  --primary: #4f46e5;
+/* Copie e substitua o bloco [data-theme="dark"] por este: */
+
+[data-theme="dark"] .card, 
+[data-theme="dark"] .card-body,
+[data-theme="dark"] .table {
+    background-color: #111111 !important;
+    color: #ffffff !important;
 }
 
-[data-theme="dark"] {
-  --bg: #111111;
-  --text: #ffffff;
-  --primary: #6366f1;
+[data-theme="dark"] thead.bg-light, 
+[data-theme="dark"] .bg-light {
+    background-color: #1f2937 !important;
+    color: #ffffff !important;
+}
+
+[data-theme="dark"] .form-control {
+    background-color: #1f2937 !important;
+    color: #ffffff !important;
+    border-color: #374151 !important;
+}
+
+[data-theme="dark"] .table td, 
+[data-theme="dark"] .table th, 
+[data-theme="dark"] .border-bottom {
+    border-color: #374151 !important;
 }

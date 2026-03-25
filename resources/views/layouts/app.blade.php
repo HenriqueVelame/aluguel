@@ -9,25 +9,93 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.0/font/bootstrap-icons.css">
 
     <style>
-        :root {
-            --sidebar-width: 250px;
+:root {
+        --sidebar-width: 250px;
+        --bg: #f8f9fa;
+        --text: #111;
+        --card-bg: #ffffff;
+        --border-color: #dee2e6;
+    }
 
-            /* TEMA CLARO PADRÃO */
-            --bg: #f8f9fa;
-            --text: #111;
-        }
+    [data-theme="dark"] {
+        --bg: #111111;
+        --text: #f8f9fa;
+        --card-bg: #1a1a1a;
+        --border-color: #333333;
+    }
 
-        [data-theme="dark"] {
-            --bg: #111;
-            --text: #f8f9fa;
-        }
+    body {
+        background-color: var(--bg);
+        color: var(--text);
+        font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        transition: background-color 0.3s ease, color 0.3s ease;
+    }
 
-        body {
-            background-color: var(--bg);
-            color: var(--text);
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            transition: all 0.3s ease;
-        }
+    /* --- CARD FIXES --- */
+    .card {
+        background-color: var(--card-bg);
+        border: 1px solid var(--border-color);
+        border-radius: 12px;
+        box-shadow: 0 4px 12px rgba(0,0,0,0.05);
+        overflow: hidden; /* <--- CORTA O HEADER QUADRADO NAS QUINAS */
+        transition: all 0.3s ease;
+    }
+
+    /* Garante que o header também arredonde os cantos superiores */
+    .card-header {
+        border-top-left-radius: 12px !important;
+        border-top-right-radius: 12px !important;
+        background-color: var(--card-bg);
+        border-bottom: 1px solid var(--border-color);
+    }
+
+    /* --- MODO ESCURO FORÇADO --- */
+    [data-theme="dark"] .card-header.bg-white,
+    [data-theme="dark"] .card {
+        background-color: var(--card-bg) !important;
+    }
+
+    [data-theme="dark"] .content, 
+    [data-theme="dark"] .card-header, 
+    [data-theme="dark"] .card-body, 
+    [data-theme="dark"] h1, [data-theme="dark"] h2, [data-theme="dark"] h3, 
+    [data-theme="dark"] h4, [data-theme="dark"] h5, [data-theme="dark"] h6, 
+    [data-theme="dark"] p, [data-theme="dark"] span, [data-theme="dark"] label, 
+    [data-theme="dark"] td, [data-theme="dark"] th {
+        color: #ffffff !important;
+    }
+
+    [data-theme="dark"] .table {
+        --bs-table-bg: var(--card-bg);
+        --bs-table-color: #ffffff;
+        --bs-table-border-color: var(--border-color);
+    }
+
+    [data-theme="dark"] .form-control {
+        background-color: #2d3748 !important;
+        color: #ffffff !important;
+        border-color: var(--border-color) !important;
+    }
+
+    /* Quando o tema for dark, ignore o 'light' do Bootstrap na tabela */
+[data-theme="dark"] .table-light,
+[data-theme="dark"] .table-light th {
+    background-color: #2d3748 !important; /* Um cinza azulado que destaca bem */
+    color: #ffffff !important;
+    border-color: #444 !important;
+}
+
+/* Ajuste para as bordas das células da tabela no modo escuro */
+[data-theme="dark"] .table td, 
+[data-theme="dark"] .table th {
+    border-bottom-color: #333 !important;
+}
+
+/* Remove aquela sombra/fundo padrão que o Bootstrap coloca no hover da tabela */
+[data-theme="dark"] .table-hover tbody tr:hover {
+    --bs-table-accent-bg: #2d3748 !important;
+    color: #ffffff !important;
+}
 
         /* Sidebar */
         .sidebar {
